@@ -122,7 +122,7 @@ with col1:
         image_source = uploaded_file
     else:
         # Try to use sample image
-        sample_path = 'data/01.jpg'
+        sample_path = 'data/02.jpg'
         if os.path.exists(sample_path):
             image_source = sample_path
             st.info("Using sample image from data folder")
@@ -192,19 +192,21 @@ if image_source is not None:
                         if result.get('image_base64'):
                             img_data = base64.b64decode(result['image_base64'])
                             annotated_image = Image.open(io.BytesIO(img_data))
-                            st.image(annotated_image, use_container_width=True)
+                            st.image(annotated_image, width='stretch')
                         else:
-                            st.image(image, use_container_width=True, caption="Original Image")
+                            st.image(image,width='stretch', caption="Original Image")
 
                         # st.divider()
                         st.subheader("Heatmap")
+                        st.button("Generate Heatmap")
 
-                        if result.get('image_heatamp'):
-                            img_data = base64.b64decode(result['image_heatmap'])
-                            annotated_image = Image.open(io.BytesIO(img_data))
-                            st.image(annotated_image, use_container_width=True)
+                        if result.get('image_heatmap'):
+                            ximg_data = base64.b64decode(result['image_heatmap'])
+                            xannotated_image = Image.open(io.BytesIO(ximg_data))
+                            st.image(xannotated_image, width='stretch')
                         else:
-                            st.image(image, use_container_width=True, caption="Original Image")
+                            st.image(image, width='stretch', caption="Original Image")
+                            st.error('No heatmap found')
 
                     with result_col:
                         st.subheader("Detection Results")

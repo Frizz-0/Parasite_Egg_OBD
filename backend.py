@@ -97,7 +97,7 @@ async def predict_parasite(
         
         # Generate annotated image
         if show_boxes:
-            line_width = 3 if (width >= 400 or height >= 400) else 1
+            line_width = 3 if (width >= 500 or height >= 500) else 1
             if show_labels:
                 annotated_image = result.plot(line_width=line_width)
             else:
@@ -118,7 +118,7 @@ async def predict_parasite(
             Image.fromarray(img_array).save(tmp_path)
         
         try:
-            xmodel = yolov8_heatmap(weight='models/best.pt', method="EigenCAM", conf_threshold=0.4, show_box=False) 
+            xmodel = yolov8_heatmap(weight='models/best.pt', method="GradCAM", conf_threshold=0.2, show_box=False, layer=[18,20,22]) 
             ximg_list = xmodel(img_path=tmp_path)
             
             # Extract the first image from the returned list
