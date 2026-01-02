@@ -1,4 +1,4 @@
-# 🐾 Parasite EGG Object Detection (Yolo + Fast API)
+# Parasite EGG Object Detection (Yolo + Fast API)
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
