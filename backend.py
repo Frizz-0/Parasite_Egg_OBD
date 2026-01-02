@@ -62,6 +62,70 @@ def health_check():
     return {"status": "healthy", "model_loaded": model is not None}
 
 
+@app.post("/generate_heatmap")
+async def generate_heatmap(
+    token: str = Depends(get_api_key),
+    file: UploadFile = File(...),
+    show_box: bool = False,
+):
+
+    
+    try:
+        # Read uploaded file
+        contents = await file.read()
+        image = Image.open(io.BytesIO(contents))
+        img_array = np.array(image)
+        
+        # Save image to temporary file since yolov8_heatmap expects img_path
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp_file:
+            tmp_path = tmp_file.name
+            Image.fromarray(img_array).save(tmp_path)
+        
+        try:
+            # Generate heatmap with specified parameters
+            heatmap_model = yolov8_heatmap(
+                weight='models/best.pt',
+                method="GradCAM",
+                conf_threshold=0.2,
+                show_box=show_box,
+                layer=[18,20,22]
+            )
+            heatmap_list = heatmap_model(img_path=tmp_path)
+            
+            # Extract heatmap image
+            if isinstance(heatmap_list, list) and len(heatmap_list) > 0:
+                heatmap_img = heatmap_list[0]
+            else:
+                heatmap_img = heatmap_list
+            
+            # Convert heatmap to PIL Image if needed
+            if isinstance(heatmap_img, Image.Image):
+                heatmap_pil = heatmap_img
+            else:
+                heatmap_pil = Image.fromarray(heatmap_img)
+            
+            # Convert to base64
+            img_buffer = io.BytesIO()
+            heatmap_pil.save(img_buffer, format='PNG')
+            heatmap_base64 = base64.b64encode(img_buffer.getvalue()).decode()
+            
+            return {
+                "status": "success",
+                "image_heatmap": heatmap_base64,
+            }
+        
+        finally:
+            # Clean up temporary file
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Error generating heatmap: {str(e)}"
+        )
+
+
 @app.post("/predict")
 async def predict_parasite(
     token: str = Depends(get_api_key),
@@ -111,36 +175,7 @@ async def predict_parasite(
         annotated_pil.save(img_buffer, format='PNG')
         img_base64 = base64.b64encode(img_buffer.getvalue()).decode()
 
-        # Creating a heatmap image
-        # Save image to temporary file since yolov8_heatmap expects img_path
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp_file:
-            tmp_path = tmp_file.name
-            Image.fromarray(img_array).save(tmp_path)
-        
-        try:
-            xmodel = yolov8_heatmap(weight='models/best.pt', method="GradCAM", conf_threshold=0.2, show_box=False, layer=[18,20,22]) 
-            ximg_list = xmodel(img_path=tmp_path)
-            
-            # Extract the first image from the returned list
-            if isinstance(ximg_list, list) and len(ximg_list) > 0:
-                ximg = ximg_list[0]
-            else:
-                ximg = ximg_list
-            
-            # Convert heatmap image to base64
-            # ximg is already a PIL Image object, so use it directly
-            if isinstance(ximg, Image.Image):
-                xannotated_pil = ximg
-            else:
-                xannotated_pil = Image.fromarray(ximg)
-            
-            ximg_buffer = io.BytesIO()
-            xannotated_pil.save(ximg_buffer, format='PNG')
-            image_heatmap = base64.b64encode(ximg_buffer.getvalue()).decode()
-        finally:
-            # Clean up temporary file
-            if os.path.exists(tmp_path):
-                os.remove(tmp_path)
+
         
         # Extract detections
         detections = result.boxes
@@ -187,7 +222,6 @@ async def predict_parasite(
         
         return {
             "image_base64": img_base64,
-            "image_heatmap" : image_heatmap,
             "detections": detection_list,
             "total_detections": len(detections),
             "avg_confidence": f"{avg_confidence:.1%}" if avg_confidence > 0 else "0.0%",
