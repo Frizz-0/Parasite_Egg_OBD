@@ -1,4 +1,4 @@
-# 🐾 Cat vs. Dog Classifier: ResNet18 + Streamlit + Docker
+# 🐾 Parasite EGG Object Detection
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
