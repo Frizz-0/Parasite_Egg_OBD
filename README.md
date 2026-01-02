@@ -1,310 +1,75 @@
-# Parasite Detection System - Complete Setup Guide
+# 🐾 Cat vs. Dog Classifier: ResNet18 + Streamlit + Docker
 
-Welcome! Your model has been successfully converted to use **FastAPI** as a backend and **Streamlit** as a frontend, with **identical output** to the original.
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![YOLO](https://img.shields.io/badge/Ultralytics_YOLO-v11-blue.svg)](https://https://www.ultralytics.com/yolo/)
 
-## 📋 Documentation Index
+<!-- [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) -->
 
-Start with one of these based on your needs:
+<!-- ![demo](/Demo_Output.jpg?raw=true "demo") -->
 
-### 🚀 Quick Start (5 minutes)
+<!-- ## Project Live Demo
 
-**→ Read: [QUICKSTART.md](QUICKSTART.md)**
+Click here for [Live Demo](https://cats-n-dogs-classification.streamlit.app) -->
 
-- Fastest way to get running
-- Windows batch files included
-- Command-line instructions
+## Project Overview
 
-### 📖 Complete Setup Guide
+ParasitePath AI is a specialized diagnostic tool designed to assist pathologists in identifying parasitic eggs from microscope slide images. By combining high-speed object detection with **_Explainable AI (xAI)_** and **_Retrieval-Augmented Generation (RAG)_**, the system not only identifies species but also provides clinically grounded treatment summaries.
 
-**→ Read: [DEPLOYMENT.md](DEPLOYMENT.md)**
+This project demonstrates the transition from a research-based model to a production-ready AI application.
 
-- Detailed technical documentation
-- API endpoint specification
-- Troubleshooting guide
-- Installation instructions
+## Features
 
-### 🏗️ Architecture Overview
+- **Real-time Detection:** Powered by a customized YOLOv11m model trained for high-precision parasite egg localization.
+- **Clinical RAG:** Integrates a Vector Database (ChromaDB) of WHO guidelines to provide instant treatment context for detected species.
+- **Explainable AI (xAI):** Utilizes EigenGrad-CAM heatmaps to highlight morphological features (e.g., shell texture) ensuring clinical trust.
+- **Production Architecture:** Decoupled FastAPI backend and Streamlit frontend for scalable, high-performance deployment.
 
-**→ Read: [ARCHITECTURE.md](ARCHITECTURE.md)**
+## Tech Stack
 
-- How old vs new architecture works
-- Why this is better
-- Scalability benefits
-- Data flow diagrams
+- **Framework:** PyTorch
+- **Architecture:** Yolov11 (Pre-trained on ImageNet)
+- **Frontend:** Streamlit
+- **Deployment:** Docker
+- **Libraries:** Torchvision, PIL, NumPy,Ultralytics,FastAPI
 
-### ✅ What Changed
+## Installation & Usage
 
-**→ Read: [MIGRATION_COMPLETE.md](MIGRATION_COMPLETE.md)**
-
-- Summary of changes
-- Files created/modified
-- Migration checklist
-
-## 🎯 Quick Start (Choose One)
-
-### Option 1: Windows Batch Files (Easiest)
-
-```
-1. Double-click: start_backend.bat
-   (Wait for "Uvicorn running..." message)
-
-2. Double-click: start_frontend.bat
-   (Browser opens automatically)
-```
-
-### Option 2: Command Line
-
-**Terminal 1 - Start Backend:**
-
-```bash
-python backend.py
-```
-
-**Terminal 2 - Start Frontend:**
-
-```bash
-streamlit run frontend.py
-```
-
-### Option 3: Using Requirements File
-
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Terminal 1
-python backend.py
-
-# Terminal 2
-streamlit run frontend.py
-```
-
-## 📂 Project Structure
-
-```
-venv/
-│
-├── 🔧 Core Application
-│   ├── backend.py              ← FastAPI server
-│   ├── frontend.py             ← Streamlit UI
-│   └── app.py                  ← Original (kept for reference)
-│
-├── 📚 Documentation
-│   ├── README.md               ← This file
-│   ├── QUICKSTART.md           ← Fast setup guide
-│   ├── DEPLOYMENT.md           ← Full technical docs
-│   ├── ARCHITECTURE.md         ← System design
-│   └── MIGRATION_COMPLETE.md   ← Migration summary
-│
-├── 🚀 Startup Scripts
-│   ├── start_backend.bat       ← Windows batch for backend
-│   ├── start_frontend.bat      ← Windows batch for frontend
-│   └── requirements.txt        ← Python dependencies
-│
-├── 🎯 Model & Data
-│   ├── models/best.pt          ← YOLO model weights
-│   └── data/01.jpg             ← Sample image
-│
-└── 🐍 Python Environment
-    ├── Lib/                    ← Virtual env packages
-    ├── Scripts/                ← Virtual env scripts
-    └── pyvenv.cfg             ← Virtual env config
-```
-
-## ✨ Key Features
-
-✅ **Identical Output**
-
-- Same UI layout
-- Same detection results
-- Same descriptions and statistics
-- Users won't notice any difference!
-
-✅ **Better Architecture**
-
-- Separated backend and frontend
-- API can be reused by other applications
-- Easier to maintain and extend
-- Better performance (model cached on backend)
-
-✅ **Easy to Run**
-
-- Batch files for Windows
-- Simple command-line options
-- Clear error messages
-- Automatic setup verification
-
-✅ **Professional Quality**
-
-- FastAPI with automatic docs
-- CORS enabled for flexibility
-- Health check endpoint
-- Proper error handling
-
-## 🔍 What's Running Where
-
-| Component                | URL                        | Purpose              |
-| ------------------------ | -------------------------- | -------------------- |
-| **Backend (FastAPI)**    | http://127.0.0.1:8000      | Model inference      |
-| Backend Docs             | http://127.0.0.1:8000/docs | Interactive API docs |
-| **Frontend (Streamlit)** | http://localhost:8501      | User interface       |
-
-## 📋 System Requirements
+### Prerequisites
 
 - Python 3.8 or higher
-- 4GB+ RAM (for YOLO model)
-- Models/best.pt must exist
-- Ports 8000 and 8501 available
+- pip or conda for package management
 
-## 🛠️ Installation
+### Setup
 
-### First Time Setup
+Clone the repository:
 
 ```bash
-# 1. Install dependencies
+git clone https://github.com/Frizz-0/Parasite_Egg_OBD.git
+```
+
+Create a virtual environment (optional but recommended):
+
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows, use: venv\Scripts\activate
+```
+
+Install the required packages:
+
+```bash
 pip install -r requirements.txt
-
-# 2. Verify model file exists
-dir models/best.pt
-
-# 3. Run backend
-python backend.py
 ```
 
-### Update Dependencies
+<!-- ## Results
 
-```bash
-pip install --upgrade -r requirements.txt
-```
+The model achieves:
 
-## 🚀 Running the Application
+- 99% accuracy on the test set
+- 0.03 cross-entropy loss
+- Training time of ~20 minutes on GPU T4 -->
 
-### Using Batch Files (Windows)
+<!-- ## License
 
-```
-1. start_backend.bat
-2. start_frontend.bat (in new window)
-3. Use the app at http://localhost:8501
-```
-
-### Using Command Line
-
-```bash
-# In terminal 1
-python backend.py
-
-# In terminal 2
-streamlit run frontend.py
-
-# Open http://localhost:8501
-```
-
-### Using Python Directly
-
-```bash
-# Terminal 1
-python -m uvicorn backend:app --host 127.0.0.1 --port 8000
-
-# Terminal 2
-streamlit run frontend.py
-```
-
-## 📖 API Documentation
-
-Once backend is running, visit:
-
-- **Interactive API Docs**: http://127.0.0.1:8000/docs
-- **Alternative API Docs**: http://127.0.0.1:8000/redoc
-
-### Main Endpoints
-
-| Method | Endpoint   | Purpose                           |
-| ------ | ---------- | --------------------------------- |
-| GET    | `/health`  | Check if backend is running       |
-| POST   | `/predict` | Process image and get predictions |
-
-## ❓ Common Questions
-
-**Q: Why do I need to run two things?**
-A: The backend processes images with the YOLO model, and the frontend provides the UI. This separation allows the model to be shared and provides better scalability.
-
-**Q: Will the output be the same?**
-A: Yes, 100% identical! Same layout, same results, same descriptions.
-
-**Q: Can I use the API with something other than Streamlit?**
-A: Yes! The backend is a standard REST API that can be called by any application.
-
-**Q: Do I need to keep the original app.py?**
-A: No, but it's preserved as a reference. You can delete it if you want.
-
-**Q: What if the frontend says backend isn't running?**
-A: Make sure you started the backend first with `python backend.py` or `start_backend.bat`.
-
-## 🆘 Troubleshooting
-
-### Backend won't start
-
-```
-Error: Address already in use
-Solution: Port 8000 is in use. Close other apps or change the port.
-```
-
-### Frontend can't connect to backend
-
-```
-Error: Cannot connect to backend
-Solution: Start backend first and wait for startup message.
-```
-
-### Model file not found
-
-```
-Error: Model file not found
-Solution: Ensure models/best.pt exists in the project directory.
-```
-
-### Python not found
-
-```
-Error: Python is not installed
-Solution: Add Python to PATH or use full path to Python executable.
-```
-
-For more troubleshooting, see [DEPLOYMENT.md](DEPLOYMENT.md#troubleshooting)
-
-## 📞 Support Files
-
-- **QUICKSTART.md** - Fast setup instructions
-- **DEPLOYMENT.md** - Complete technical documentation
-- **ARCHITECTURE.md** - System design and comparison
-- **MIGRATION_COMPLETE.md** - What was changed
-
-## 🎯 Next Steps
-
-1. ✅ Read [QUICKSTART.md](QUICKSTART.md) for fastest setup
-2. ✅ Run `start_backend.bat` or `python backend.py`
-3. ✅ Run `start_frontend.bat` or `streamlit run frontend.py`
-4. ✅ Open http://localhost:8501
-5. ✅ Upload images and test!
-
----
-
-## 📊 Quick Reference
-
-```
-START BACKEND:     python backend.py
-START FRONTEND:    streamlit run frontend.py
-BACKEND URL:       http://127.0.0.1:8000
-FRONTEND URL:      http://localhost:8501
-API DOCS:          http://127.0.0.1:8000/docs
-HEALTH CHECK:      http://127.0.0.1:8000/health
-```
-
----
-
-**🎉 Your system is ready to use!**
-
-The output is **guaranteed to be identical** to your original application.
-Only the architecture has improved - the functionality remains the same!
-
-👉 **Start with [QUICKSTART.md](QUICKSTART.md) if you just want to run it quickly**
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. -->
