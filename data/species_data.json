@@ -1,0 +1,137 @@
+[
+  {
+    "species_name": "Ancylostoma",
+    "common_name": "Hookworm",
+    "taxonomy": {
+      "kingdom":"Animalia",
+      "phylum": "Nematoda",
+      "class": "Chromadorea",
+      "order": "Rhabditida",
+      "family": "Ancylostomatidae"
+    },
+    "medical_info": {
+      "habitat": "Small intestine (human/animal), moist soil",
+      "treatment": "Albendazole or Mebendazole",
+      "dosage": "Albendazole 400 mg single dose"
+    },
+    "description": "A blood-feeding nematode that enters the body through the skin, often leading to iron-deficiency anemia."
+  },
+  {
+    "species_name": "Ascaris lumbricoides",
+    "common_name": "Giant Roundworm",
+    "taxonomy": {
+      "kingdom":"Animalia",
+      "phylum": "Nematoda",
+      "class": "Chromadorea",
+      "order": "Rhabditida",
+      "family": "Ascarididae"
+    },
+    "medical_info": {
+      "habitat": "Small intestine, soil-transmitted worldwide",
+      "treatment": "Albendazole",
+      "dosage": "400 mg single dose"
+    },
+    "description": "The largest nematode parasitizing the human intestine, often transmitted through fecal-oral contamination of food/water."
+  },
+  {
+    "species_name": "Enterobius vermicularis",
+    "common_name": "Pinworm",
+    "taxonomy": {
+      "kingdom":"Animalia",
+      "phylum": "Nematoda",
+      "class": "Chromadorea",
+      "order": "Rhabditida",
+      "family": "Oxyuridae"
+    },
+    "medical_info": {
+      "habitat": "Large intestine (caecum), perianal region",
+      "treatment": "Mebendazole or Pyrantel pamoate",
+      "dosage": "100 mg single dose, repeat in 2 weeks"
+    },
+    "description": "A common intestinal parasite, especially in children, known for causing intense nocturnal perianal itching."
+  },
+  {
+    "species_name": "Fasciola hepatica",
+    "common_name": "Sheep Liver Fluke",
+    "taxonomy": {
+      "kingdom":"Animalia",
+      "phylum": "Platyhelminthes",
+      "class": "Trematoda",
+      "order": "Echinostomida",
+      "family": "Fasciolidae"
+    },
+    "medical_info": {
+      "habitat": "Bile ducts and liver",
+      "treatment": "Triclabendazole",
+      "dosage": "10 mg/kg single dose"
+    },
+    "description": "A trematode that infects the liver, usually acquired by consuming contaminated watercress or aquatic plants."
+  },
+  {
+    "species_name": "Hymenolepis nana",
+    "common_name": "Dwarf Tapeworm",
+    "taxonomy": {
+      "kingdom":"Animalia",
+      "phylum": "Platyhelminthes",
+      "class": "Cestoda",
+      "order": "Cyclophyllidea",
+      "family": "Hymenolepididae"
+    },
+    "medical_info": {
+      "habitat": "Small intestine",
+      "treatment": "Praziquantel",
+      "dosage": "25 mg/kg single dose"
+    },
+    "description": "The smallest and most common human tapeworm, capable of completing its entire life cycle within a single host."
+  },
+  {
+    "species_name": "Schistosoma",
+    "common_name": "Blood Fluke",
+    "taxonomy": {
+      "kingdom":"Animalia",
+      "phylum": "Platyhelminthes",
+      "class": "Trematoda",
+      "order": "Diplostomida",
+      "family": "Schistosomatidae"
+    },
+    "medical_info": {
+      "habitat": "Venous system (mesenteric or pelvic venules)",
+      "treatment": "Praziquantel",
+      "dosage": "40-60 mg/kg in divided doses"
+    },
+    "description": "Trematodes that cause Schistosomiasis; they infect humans via contact with fresh water containing snail-intermediate hosts."
+  },
+  {
+    "species_name": "Taenia",
+    "common_name": "Tapeworm (Pork/Beef)",
+    "taxonomy": {
+      "kingdom":"Animalia",
+      "phylum": "Platyhelminthes",
+      "class": "Cestoda",
+      "order": "Cyclophyllidea",
+      "family": "Taeniidae"
+    },
+    "medical_info": {
+      "habitat": "Small intestine",
+      "treatment": "Praziquantel or Niclosamide",
+      "dosage": "5-10 mg/kg single dose (Praziquantel)"
+    },
+    "description": "Segmented flatworms (T. saginata and T. solium) acquired by eating undercooked beef or pork containing cysticerci."
+  },
+  {
+    "species_name": "Trichuris trichiura",
+    "common_name": "Whipworm",
+    "taxonomy": {
+      "phylum": "Nematoda",
+      "class": "Enoplea",
+      "order": "Trichinellida",
+      "family": "Trichuridae"
+    },
+    "medical_info": {
+      "habitat": "Large intestine (caecum and colon)",
+      "treatment": "Mebendazole or Albendazole",
+      "dosage": "100 mg twice daily for 3 days (Mebendazole)"
+    },
+    "description": "An intestinal nematode named for its whip-like shape, which embeds its thin anterior end into the intestinal mucosa."
+  }
+]

@@ -1,5 +1,6 @@
 import psycopg2
 import os
+import json
 
 conn = psycopg2.connect(host = 'localhost', password='6999', dbname = 'postgres', user = 'postgres')
 
@@ -40,6 +41,8 @@ def add_tables_pg():
     conn.commit()
     cur.close()
     conn.close()
+    
+
 
 def add_new_parasite(species_data, tax_data, treat_data):
 
@@ -85,7 +88,7 @@ treatments = {'drug': 'Albendazole', 'dosage': '400mg single dose', 'notes': 'St
 def get_parasite_details(name):
     
     query = '''
-    SELECT s.scientific_name,s.common_name, s.habitat, s.description, t.kingdom, t.phylum, t.class, tr.drug_name, tr.dosage_instruction
+    SELECT s.description, s.scientific_name,s.common_name, s.habitat, t.kingdom, t.phylum, t.class, t.order_rank, t.family, tr.drug_name, tr.dosage_instruction
     FROM parasite_app.species s
     JOIN parasite_app.taxonomy t ON s.taxonomy_id = t.taxonomy_id
     JOIN parasite_app.treatments tr ON s.treatments_id = tr.treatments_id
@@ -101,9 +104,10 @@ def get_parasite_details(name):
         # print(f"Taxonomy: {result[1]}")
         # print(f"Treatment: {result[2]} ({result[3]})")
         # print(result)
-        print(f"Name: {result[0]}\nCommonly Called: {result[1]}\nFound in: {result[2]}\nDescription: {result[3]}\n")
-        print(f"(Taxonomy)\nKingdom: {result[4]}\nPhylum: {result[5]}\nClass : {result[6]}\n")
-        print(f"Treatment : {result[7]} ({result[8]})")
+        print(f"(Species)\nName: {result[1]}\nCommonly Called: {result[2]}\nFound in: {result[3]}\n")
+        print(f"(Taxonomy)\nKingdom: {result[4]}\nPhylum: {result[5]}\nClass: {result[6]}\nOrder: {result[7]}\nFamily: {result[8]}\n")
+        print(f"(Treatment)\nTreatment : {result[9]} ({result[10]})\n")
+        print(f"Description: {result[0]}")
     
     else:
         print("Parasite not found in database.")
@@ -136,6 +140,60 @@ def backup_table_to_csv(table_name, output_file):
 
 # --- Run the Backup ---
 # This creates a 'backups' folder if it doesn't exist
-os.makedirs("backups", exist_ok=True)
+# os.makedirs("backups", exist_ok=True)
 
-backup_table_to_csv("species", "backups/species_backup.csv")
+# backup_table_to_csv("species", "backups/species_backup.csv")
+
+def ingest_parasite_json(file_path):
+    # 1. Load the JSON data
+    with open(file_path, 'r') as f:
+        parasites = json.load(f)
+
+    try:
+        for p in parasites:
+            # --- STEP A: Insert Taxonomy & Get ID ---
+            cur.execute("""
+                INSERT INTO parasite_app.taxonomy (kingdom,phylum, class, order_rank, family)
+                VALUES (%s, %s, %s, %s, %s) RETURNING taxonomy_id;
+            """, (p['taxonomy']['kingdom'],p['taxonomy']['phylum'], p['taxonomy']['class'], 
+                  p['taxonomy']['order'], p['taxonomy']['family']))
+            tax_id = cur.fetchone()[0]
+
+            # --- STEP B: Insert Treatment & Get ID ---
+            cur.execute("""
+                INSERT INTO parasite_app.treatments (drug_name, dosage_instruction, notes)
+                VALUES (%s, %s, %s) RETURNING treatments_id;
+            """, (p['medical_info']['treatment'], p['medical_info']['dosage'], "Imported via JSON"))
+            treat_id = cur.fetchone()[0]
+
+            # --- STEP C: Insert Species using the new IDs ---
+            cur.execute("""
+                INSERT INTO parasite_app.species 
+                (scientific_name, common_name, habitat, description, taxonomy_id, treatments_id)
+                VALUES (%s, %s, %s, %s, %s, %s);
+            """, (p['species_name'], p['common_name'], p['medical_info']['habitat'], 
+                  p['description'], tax_id, treat_id))
+
+        # 3. Permanent Save
+        conn.commit()
+        print(f"✅ Success! {len(parasites)} parasites imported with all links.")
+
+    except Exception as e:
+        conn.rollback() # If any error happens, undo EVERYTHING
+        print(f"❌ Error during import: {e}")
+
+    finally:
+        cur.close()
+        conn.close()
+
+# Run the ingestion
+
+if __name__=='__main__':
+
+    # add_tables_pg()
+    # add_new_parasite(species,taxanomy,treatments)
+    get_parasite_details('Ascaris lumbricoides')
+ 
+    # ingest_parasite_json(r'data\species_data.json')
+
+    # backup_table_to_csv("species", "backups/species_backup.csv")

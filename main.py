@@ -5,6 +5,8 @@ from PIL import Image
 import os
 import io
 import base64
+import json
+import psycopg2
 
 # Parasite descriptions
 PARASITE_DESCRIPTIONS = {
@@ -122,7 +124,7 @@ with col1:
         image_source = uploaded_file
     else:
         # Try to use sample image
-        sample_path = 'data/02.jpg'
+        sample_path = 'data/01.jpg'
         if os.path.exists(sample_path):
             image_source = sample_path
             st.info("Using sample image from data folder")
@@ -176,7 +178,7 @@ if image_source is not None:
                     headers=HEADERS,
                     files=files,
                     params=params,
-                    timeout=30
+                    timeout=30,
                 )
                 
                 if response.status_code == 200:
@@ -236,11 +238,12 @@ if image_source is not None:
                         st.subheader("Detection Results")
                         
                         detections = result.get('detections', [])
-                        
+
                         if len(detections) == 0:
                             st.warning("⚠️ No parasites detected in this image.")
                         else:
                             st.success(f"✅ Found **{len(detections)}** parasite(s)")
+
                             
                             # Display each detection
                             for detection in detections:
@@ -250,6 +253,15 @@ if image_source is not None:
                                 conf_emoji = detection['confidence_emoji']
                                 description = detection['description']
                                 conf_percentage = detection['confidence_percentage']
+
+                                parasite_details_response = requests.get(
+                                f"{BACKEND_URL}/parasite/{detection['name']}",
+                                headers = HEADERS,
+                                timeout = 60)
+
+                                if parasite_details_response.status_code == 200:
+                                    parasite_details = parasite_details_response.json()
+                                
                                 
                                 # Determine confidence class
                                 if conf > 0.8:
@@ -263,8 +275,10 @@ if image_source is not None:
                                 <div class="prediction-box">
                                 <h4>{idx}. {class_name}</h4>
                                 <p><span class="{conf_class}"><b>Confidence: {conf_percentage}</b> {conf_emoji}</span></p>
-                                <hr style="margin: 0.5rem 0;">
-                                <p><i>{description}</i></p>
+                                <hr style="margin: 0.0rem 0;">
+                                <div style="white-space: pre-line; font-weight: bold;">                                
+                                <p><i>{parasite_details[0]}\n{parasite_details[1]}\n{parasite_details[2]}\n{parasite_details[3]}</i>
+                                </div>
                                 </div>
                                 """, unsafe_allow_html=True)
                         

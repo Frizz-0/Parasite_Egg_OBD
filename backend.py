@@ -10,6 +10,7 @@ import io
 import base64
 import tempfile
 import os
+import psycopg2
 
 app = FastAPI(title="Parasite Detection API", description="YOLO-based parasite detection system")
 
@@ -61,7 +62,45 @@ def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "model_loaded": model is not None}
 
+#Get Parasite Names
+def get_db_conn():
+   return psycopg2.connect(host = 'localhost', password='6999', dbname = 'postgres', user = 'postgres')
+   
 
+@app.get("/parasite/{name}")
+async def get_parasite_details(name):
+    
+    conn = get_db_conn()
+    cur = conn.cursor()
+
+    query = '''
+    SELECT s.description, s.scientific_name,s.common_name, s.habitat, t.kingdom, t.phylum, t.class, t.order_rank, t.family, tr.drug_name, tr.dosage_instruction
+    FROM parasite_app.species s
+    JOIN parasite_app.taxonomy t ON s.taxonomy_id = t.taxonomy_id
+    JOIN parasite_app.treatments tr ON s.treatments_id = tr.treatments_id
+    WHERE s.scientific_name ILIKE %s;
+
+    '''
+
+    cur.execute(query,(name,))
+    result = cur.fetchone()
+
+    if result:
+        
+        info = (f"(Species)\nName: {result[1]}\nCommonly Called: {result[2]}\nFound in: {result[3]}\n",
+                f"(Taxonomy)\nKingdom: {result[4]}\nPhylum: {result[5]}\nClass: {result[6]}\nOrder: {result[7]}\nFamily: {result[8]}\n",
+                f"(Treatment)\nTreatment : {result[9]} ({result[10]})\n",
+                f"Description: {result[0]}"
+        )
+
+        return info
+    else:
+        print("Parasite not found in database.")
+    
+    cur.close()
+    conn.close()
+
+#Get Heatmap
 @app.post("/generate_heatmap")
 async def generate_heatmap(
     token: str = Depends(get_api_key),
@@ -126,6 +165,7 @@ async def generate_heatmap(
         )
 
 
+#Get Detections
 @app.post("/predict")
 async def predict_parasite(
     token: str = Depends(get_api_key),
